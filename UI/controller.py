@@ -10,11 +10,47 @@ class Controller:
         # the model, which implements the logic of the program and holds the data
         self._model = model
 
+    def fillDDCategoria(self):
+        categorie = self._model.getCategorie()
+        for c in categorie:
+            self._view._ddcategory.options.append(ft.dropdown.Option(str(c)))
+        self._view.update_page()
+
     def handleCreaGrafo(self, e):
-        pass
+
+        r1 = self._view._ddcategory.value
+        r2 = self._view._dp1.value
+        r3 = self._view._dp2.value
+
+        if r1 is None:
+            self._view.create_alert("Seleziona un valore")
+            return
+
+        if r2 is None:
+            self._view.create_alert("Seleziona un valore")
+            return
+
+        if r3 is None:
+            self._view.create_alert("Seleziona un valore")
+            return
+
+        self._model.buildGraph(r2, r3, r1)
+
+        # pulisco la lista risultati
+        self._view.txt_result.controls.clear()
+
+        # stampo le info
+        self._view.txt_result.controls.append(ft.Text("Grafo correttamente creato."))
+        self._view.txt_result.controls.append(
+            ft.Text(f"Il grafo ha {self._model.getNumNodes()} nodi e {self._model.getNumEdges()} archi."))
+
+        self._view.update_page()
 
     def handleBestProdotti(self, e):
-        pass
+        for prodotto, score in self._model.getTopProdotti():
+            self._view.txt_result.controls.append(ft.Text(f"{prodotto.product_name} with score {score}"))
+
+        self._view.update_page()
 
     def handleCercaCammino(self, e):
         pass
